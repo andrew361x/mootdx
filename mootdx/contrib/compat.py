@@ -26,6 +26,7 @@ class MooTdxDailyBarReader(TdxDailyBarReader):
         "SZ_INDEX",
         "SZ_FUND",
         "SZ_BOND",
+        "SZ_REIT",
     ]
 
     SECURITY_COEFFICIENT = {
@@ -40,6 +41,7 @@ class MooTdxDailyBarReader(TdxDailyBarReader):
         "SZ_INDEX": [0.01, 1.0],
         "SZ_FUND": [0.001, 0.01],
         "SZ_BOND": [0.001, 0.01],
+        "SZ_REIT": [0.001, 0.01],
     }
 
     def get_security_type(self, fname):
@@ -62,6 +64,9 @@ class MooTdxDailyBarReader(TdxDailyBarReader):
 
             if code_head in ["10", "11", "12", "13", "14"]:
                 return "SZ_BOND"
+            if code_head in ["18"]: #sz18  增加REIT
+                return "SZ_REIT"
+  
         elif exchange == self.SECURITY_EXCHANGE[1]:
             if code_head in ["60"]:
                 return "SH_A_STOCK"
@@ -75,10 +80,10 @@ class MooTdxDailyBarReader(TdxDailyBarReader):
             if code_head in ["00", "88", "99"]:
                 return "SH_INDEX"
 
-            if code_head in ["50", "51", "58"]:
+            if code_head in ["50", "51", "58", "56"]: #增加sh56  ETF
                 return "SH_FUND"
 
-            if code_head in ["01", "10", "11", "12", "13", "14"]:
+            if code_head in ["01", "10", "11", "12", "13", "14","20"]: #增加sh20  国债逆回购
                 return "SH_BOND"
         else:
             logger.error("Unknown security exchange !\n")
